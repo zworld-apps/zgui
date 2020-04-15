@@ -9,53 +9,47 @@ type IUpdateable interface {
 }
 
 type IPosition interface {
-	GetX() int32
-	SetX() int32
-	GetY() int32
-	SetY() int32
+	GetX() float32
+	GetY() float32
 }
 
-type IRectangle interface {
+type IContainer interface {
 	IPosition
 
-	GetWidth() int32
-	SetWidth() int32
-	GetHeight() int32
-	SetHeight() int32
-}
-
-type IConstraints interface {
-	SetX(IConstraint constraint)
-	SetY(IConstraint constraint)
-	SetWidth(IConstraint constraint)
-	SetHeight(IConstraint constraint)
-
-	GetX() IConstraint
-	GetY() IConstraint
-	GetWidth() IConstraint
-	GetHeight() IConstraint
+	GetWidth() float32
+	GetHeight() float32
 }
 
 type IConstraint interface {
-	ValueX(IRectangle box) int32
-	ValueY(IRectangle box) int32
-	ValueWidth(IRectangle box) int32
-	ValueHeight(IRectangle box) int32
+	ValueX(IContainer) float32
+	ValueY(IContainer) float32
+	ValueWidth(IContainer) float32
+	ValueHeight(IContainer) float32
+}
+
+type IConstraints interface {
+	IContainer
+
+	setParent(IConstraints)
+
+	SetX(IConstraint)
+	SetY(IConstraint)
+	SetWidth(IConstraint)
+	SetHeight(IConstraint)
+
+	GetBounds() IContainer
 }
 
 type IComponent interface {
 	IDrawable
 	IUpdateable
-	IRectangle
+	IContainer
 
 	// init creates all component parts
 	init()
 
-	GetPadding()
-	SetPadding()
-
-	SetConstraints(IConstraints constraints)
+	setConstraints(IConstraints)
 	GetConstraints() IConstraints
 
-	Add(IComponent component, IConstraints constraints)
+	Add(IComponent, IConstraints)
 }
