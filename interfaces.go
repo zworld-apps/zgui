@@ -21,16 +21,18 @@ type IContainer interface {
 }
 
 type IConstraint interface {
-	ValueX(IContainer) float32
-	ValueY(IContainer) float32
-	ValueWidth(IContainer) float32
-	ValueHeight(IContainer) float32
+	IContainer
+	setParent(IConstraints)
+
+	self() IConstraints
+	parent() IConstraints
 }
 
 type IConstraints interface {
 	IContainer
 
 	setParent(IConstraints)
+	getParent() IConstraints
 
 	SetX(IConstraint)
 	SetY(IConstraint)

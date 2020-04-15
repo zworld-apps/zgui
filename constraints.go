@@ -12,19 +12,27 @@ func (c *Constraints) setParent(parent IConstraints) {
 	c.parent = parent
 }
 
+func (c *Constraints) getParent() IConstraints {
+	return c.parent
+}
+
 func (c *Constraints) SetX(constraint IConstraint) {
+	constraint.setParent(c)
 	c.x = constraint
 }
 
 func (c *Constraints) SetY(constraint IConstraint) {
+	constraint.setParent(c)
 	c.y = constraint
 }
 
 func (c *Constraints) SetWidth(constraint IConstraint) {
+	constraint.setParent(c)
 	c.width = constraint
 }
 
 func (c *Constraints) SetHeight(constraint IConstraint) {
+	constraint.setParent(c)
 	c.height = constraint
 }
 
@@ -36,19 +44,19 @@ func (c *Constraints) getParentBounds() IContainer {
 }
 
 func (c *Constraints) GetX() float32 {
-	return c.x.ValueX(c.getParentBounds())
+	return c.x.GetX()
 }
 
 func (c *Constraints) GetY() float32 {
-	return c.y.ValueY(c.getParentBounds())
+	return c.y.GetY()
 }
 
 func (c *Constraints) GetWidth() float32 {
-	return c.width.ValueWidth(c.getParentBounds())
+	return c.width.GetWidth()
 }
 
 func (c *Constraints) GetHeight() float32 {
-	return c.height.ValueHeight(c.getParentBounds())
+	return c.height.GetHeight()
 }
 
 func (c *Constraints) GetBounds() IContainer {
@@ -61,12 +69,12 @@ func (c *Constraints) GetBounds() IContainer {
 }
 
 // DefaultConstraints initializes a Constraints object with
-// all constraints set to NoConstraint
+// all constraints set to fill parent
 func DefaultConstraints() *Constraints {
 	return &Constraints{
-		x:      NoConstraint{},
-		y:      NoConstraint{},
-		width:  NoConstraint{},
-		height: NoConstraint{},
+		x:      FillConstraint{},
+		y:      FillConstraint{},
+		width:  FillConstraint{},
+		height: FillConstraint{},
 	}
 }

@@ -1,5 +1,7 @@
 package zgui
 
+import "fmt"
+
 type baseComponent struct {
 	IConstraints
 	components []IComponent
@@ -18,6 +20,7 @@ func (b *baseComponent) GetConstraints() IConstraints {
 }
 
 func (b *baseComponent) Add(component IComponent, constraints IConstraints) {
+	fmt.Printf("setParent(%+v)\nsetConstraints(%+v)\n", b.GetConstraints(), constraints)
 	constraints.setParent(b.GetConstraints())
 	component.setConstraints(constraints)
 	b.components = append(b.components, component)

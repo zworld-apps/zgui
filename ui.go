@@ -24,24 +24,28 @@ func GetDisplay() *ScreenComponent {
 	return screen
 }
 
-type fullscreenConstraint struct{}
+type fullscreenConstraint struct {
+	*baseConstraint
+}
 
 func newFullscreenConstraint() *fullscreenConstraint {
-	return &fullscreenConstraint{}
+	return &fullscreenConstraint{
+		baseConstraint: newBaseConstraint(),
+	}
 }
 
-func (c *fullscreenConstraint) ValueX(box IContainer) float32 {
+func (c *fullscreenConstraint) GetX() float32 {
 	return 0
 }
 
-func (c *fullscreenConstraint) ValueY(box IContainer) float32 {
+func (c *fullscreenConstraint) GetY() float32 {
 	return 0
 }
 
-func (c *fullscreenConstraint) ValueWidth(box IContainer) float32 {
+func (c *fullscreenConstraint) GetWidth() float32 {
 	return float32(rl.GetScreenWidth())
 }
 
-func (c *fullscreenConstraint) ValueHeight(box IContainer) float32 {
+func (c *fullscreenConstraint) GetHeight() float32 {
 	return float32(rl.GetScreenHeight())
 }

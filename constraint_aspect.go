@@ -1,26 +1,31 @@
 package zgui
 
-// TODO: AspectConstraint aspect ratio relative to other constraints
+// AspectConstraint to keep aspect ratio between the
+// opposite bound
 type AspectConstraint struct {
+	*baseConstraint
 	val float32
 }
 
 func NewAspectConstraint(val float32) *AspectConstraint {
-	return &AspectConstraint{val: val}
+	return &AspectConstraint{
+		baseConstraint: newBaseConstraint(),
+		val:            val,
+	}
 }
 
-func (c AspectConstraint) ValueX(box IContainer) float32 {
-	return box.GetX() * c.val
+func (c AspectConstraint) GetX() float32 {
+	return c.self().GetY() * c.val
 }
 
-func (c AspectConstraint) ValueY(box IContainer) float32 {
-	return box.GetY() * c.val
+func (c AspectConstraint) GetY() float32 {
+	return c.self().GetX() * c.val
 }
 
-func (c AspectConstraint) ValueWidth(box IContainer) float32 {
-	return box.GetWidth() * c.val
+func (c AspectConstraint) GetWidth() float32 {
+	return c.self().GetHeight() * c.val
 }
 
-func (c AspectConstraint) ValueHeight(box IContainer) float32 {
-	return box.GetHeight() * c.val
+func (c AspectConstraint) GetHeight() float32 {
+	return c.self().GetWidth() * c.val
 }

@@ -14,10 +14,10 @@ func main() {
 	display := zgui.GetDisplay()
 
 	constraints := zgui.DefaultConstraints()
-	constraints.SetX(zgui.NewPixelConstraint(100))
-	constraints.SetY(zgui.NewPixelConstraint(200))
-	constraints.SetWidth(zgui.NewPixelConstraint(100))
-	constraints.SetHeight(zgui.NewPixelConstraint(200))
+	constraints.SetX(zgui.NewCenterConstraint())
+	constraints.SetY(zgui.NewPixelConstraint(20))
+	constraints.SetWidth(zgui.NewRelativeConstraint(0.1))
+	constraints.SetHeight(zgui.NewAspectConstraint(1))
 	box := zgui.NewBoxComponent(rl.Red)
 
 	display.Add(box, constraints)
