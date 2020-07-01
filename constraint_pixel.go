@@ -1,14 +1,14 @@
 package zgui
 
 type PixelConstraint struct {
-	*baseConstraint
+	IConstraint
 	val float32
 }
 
 func NewPixelConstraint(val float32) *PixelConstraint {
 	return &PixelConstraint{
-		baseConstraint: newBaseConstraint(),
-		val:            val,
+		IConstraint: newBaseConstraint(),
+		val:         val,
 	}
 }
 
@@ -26,4 +26,8 @@ func (c PixelConstraint) GetWidth() float32 {
 
 func (c PixelConstraint) GetHeight() float32 {
 	return c.val
+}
+
+func (c PixelConstraint) String() string {
+	return "PixelConstraint"
 }

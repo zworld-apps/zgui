@@ -3,14 +3,14 @@ package zgui
 // AspectConstraint to keep aspect ratio between the
 // opposite bound
 type AspectConstraint struct {
-	*baseConstraint
+	IConstraint
 	val float32
 }
 
 func NewAspectConstraint(val float32) *AspectConstraint {
 	return &AspectConstraint{
-		baseConstraint: newBaseConstraint(),
-		val:            val,
+		IConstraint: newBaseConstraint(),
+		val:         val,
 	}
 }
 
@@ -28,4 +28,8 @@ func (c AspectConstraint) GetWidth() float32 {
 
 func (c AspectConstraint) GetHeight() float32 {
 	return c.self().GetWidth() * c.val
+}
+
+func (c AspectConstraint) String() string {
+	return "AspectConstraint"
 }

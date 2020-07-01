@@ -2,23 +2,27 @@ package zgui
 
 // RelativeConstraint relative to parent
 type RelativeConstraint struct {
-	*baseConstraint
+	IConstraint
 	val float32
 }
 
 func NewRelativeConstraint(val float32) *RelativeConstraint {
 	return &RelativeConstraint{
-		baseConstraint: newBaseConstraint(),
-		val:            val,
+		IConstraint: newBaseConstraint(),
+		val:         val,
 	}
 }
 
+func (c *RelativeConstraint) SetRelativeValue(val float32) {
+	c.val = val
+}
+
 func (c RelativeConstraint) GetX() float32 {
-	return c.parent().GetX() * c.val
+	return c.parent().GetWidth() * c.val
 }
 
 func (c RelativeConstraint) GetY() float32 {
-	return c.parent().GetY() * c.val
+	return c.parent().GetHeight() * c.val
 }
 
 func (c RelativeConstraint) GetWidth() float32 {
@@ -27,4 +31,8 @@ func (c RelativeConstraint) GetWidth() float32 {
 
 func (c RelativeConstraint) GetHeight() float32 {
 	return c.parent().GetHeight() * c.val
+}
+
+func (c RelativeConstraint) String() string {
+	return "RelativeConstraint"
 }

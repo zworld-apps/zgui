@@ -1,5 +1,7 @@
 package zgui
 
+import "fmt"
+
 type baseConstraint struct {
 	parentConstraints IConstraints
 }
@@ -14,11 +16,17 @@ func (c *baseConstraint) setParent(parent IConstraints) {
 	c.parentConstraints = parent
 }
 
-func (c *baseConstraint) self() IConstraints {
+// // Pointer function to expose the variable as we need to preserve the functional
+// // way of constraints.
+// func (c *baseConstraint) ParentConstraints() *IConstraints {
+// 	return &c.parentConstraints
+// }
+
+func (c baseConstraint) self() IConstraints {
 	return c.parentConstraints
 }
 
-func (c *baseConstraint) parent() IConstraints {
+func (c baseConstraint) parent() IConstraints {
 	return c.self().getParent()
 }
 
@@ -36,4 +44,8 @@ func (c baseConstraint) GetWidth() float32 {
 
 func (c baseConstraint) GetHeight() float32 {
 	return c.parent().GetHeight()
+}
+
+func (c baseConstraint) String() string {
+	return fmt.Sprintf("baseConstraint{%v}", c.parentConstraints)
 }

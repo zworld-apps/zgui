@@ -1,5 +1,11 @@
 package zgui
 
+import (
+	"fmt"
+
+	rl "github.com/xzebra/raylib-go/raylib"
+)
+
 type IDrawable interface {
 	Draw()
 }
@@ -39,7 +45,12 @@ type IConstraints interface {
 	SetWidth(IConstraint)
 	SetHeight(IConstraint)
 
-	GetBounds() IContainer
+	GetXConstraint() IConstraint
+	GetYConstraint() IConstraint
+	GetHeightConstraint() IConstraint
+	GetWidthConstraint() IConstraint
+
+	GetBounds() rl.Rectangle
 }
 
 type IComponent interface {
@@ -47,11 +58,13 @@ type IComponent interface {
 	IUpdateable
 	IContainer
 
-	// init creates all component parts
-	init()
+	fmt.Stringer
 
 	setConstraints(IConstraints)
 	GetConstraints() IConstraints
 
 	Add(IComponent, IConstraints)
+
+	TouchInBounds() bool
+	MouseInBounds(mx int32, my int32) bool
 }

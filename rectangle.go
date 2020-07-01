@@ -1,7 +1,7 @@
 package zgui
 
 import (
-	rl "github.com/Lachee/raylib-goplus/raylib"
+	rl "github.com/xzebra/raylib-go/raylib"
 )
 
 type rectangle rl.Rectangle
@@ -36,4 +36,17 @@ func (r *rectangle) SetX(v float32) {
 
 func (r *rectangle) SetY(v float32) {
 	r.Y = v
+}
+
+type intRectangle struct {
+	X, Y, Width, Height int32
+}
+
+func NewIntRectangle(r IContainer) *intRectangle {
+	return &intRectangle{
+		X:      int32(r.GetX()),
+		Y:      int32(r.GetY()),
+		Width:  int32(r.GetWidth()),
+		Height: int32(r.GetHeight()),
+	}
 }

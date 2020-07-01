@@ -1,2 +1,4 @@
-github.com/Lachee/raylib-goplus v0.0.0-20200404015944-3c3bf27f1636 h1:qIFD8kvuyQVfjlkUaHk4VmTtSf9a8nEv5Sz7UOG9M08=
-github.com/Lachee/raylib-goplus v0.0.0-20200404015944-3c3bf27f1636/go.mod h1:Xlg7toyG2MybbhjwHWRKbyGy+k6qn/ztN5/AYcqdl6Y=
+github.com/xzebra/raylib-go v0.0.0-20200630135111-2e99f95cb559 h1:ydBQUbYtTW60HUgt432HmRg51ZsDLz7MeuaU/xwqB5Q=
+github.com/xzebra/raylib-go v0.0.0-20200630135111-2e99f95cb559/go.mod h1:O6pcgNpgvQnteBaruK06k4aBq4EKy2IsvFOLRTkgbTo=
+github.com/xzebra/raylib-go v0.0.0-20200701011641-9194a5e71e8d h1:jQaBOvFbQkeRrAsQjVrlA1MeRmAO5ITg3HKlozCgweY=
+github.com/xzebra/raylib-go v0.0.0-20200701011641-9194a5e71e8d/go.mod h1:O6pcgNpgvQnteBaruK06k4aBq4EKy2IsvFOLRTkgbTo=
