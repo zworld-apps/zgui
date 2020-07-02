@@ -89,12 +89,10 @@ func (tf *TextFieldComponent) Update(dt float32) {
 	touched := (hover && tapped) || tf.TouchInBounds()
 
 	if hover {
-		if touched {
-			if tf.State != StatePressed {
-				tf.SetState(StatePressed)
-				tf.timer = 0
-				rl.ShowKeyboard(true)
-			}
+		if touched && tf.State != StatePressed {
+			tf.SetState(StatePressed)
+			tf.timer = 0
+			rl.ShowKeyboard(true)
 		} else if tf.State == StateNormal {
 			tf.SetState(StateFocused)
 			tf.showBar = false
@@ -105,33 +103,33 @@ func (tf *TextFieldComponent) Update(dt float32) {
 		// rl.ShowKeyboard(false)
 	}
 
-	if tf.IsSelected() {
-		tf.timer += dt
-		if tf.timer >= selectedBarTime {
-			tf.timer = 0
-			tf.showBar = !tf.showBar
-		}
-
-		// text field keyboard handling
-		latestKey := rl.GetKeyPressed()
-		if latestKey != 0 {
-			// only non special keys are listed as KeyPressed,
-			// the rest of them can be checked with rl.IsKeyPressed
-			tf.handleKeyPressed(latestKey)
-		} else if rl.IsKeyPressed(rl.KeyBackspace) {
-			tf.removeChar()
-		} else if rl.IsKeyPressed(rl.KeyEnter) {
-			if tf.opt.SubmitCallback != nil && len(tf.Text) > 0 {
-				tf.opt.SubmitCallback(tf)
-				tf.Text = ""
-				tf.Label.Text = ""
-			}
-		}
+	if !tf.IsSelected() {
+		return
 	}
-}
 
-func (tf *TextFieldComponent) Draw() {
-	tf.baseComponent.Draw()
+	tf.timer += dt
+	if tf.timer >= selectedBarTime {
+		tf.timer = 0
+		tf.showBar = !tf.showBar
+	}
+
+	// text field keyboard handling
+	latestKey := rl.GetKeyPressed()
+	if latestKey != 0 {
+		// only non special keys are listed as KeyPressed,
+		// the rest of them can be checked with rl.IsKeyPressed
+		tf.handleKeyPressed(latestKey)
+	} else if rl.IsKeyPressed(rl.KeyBackspace) {
+		tf.removeChar()
+	} else if rl.IsKeyPressed(rl.KeyEnter) &&
+		tf.opt.SubmitCallback != nil &&
+		len(tf.Text) > 0 {
+		// submit text field content
+		tf.opt.SubmitCallback(tf)
+		tf.Text = ""
+		tf.Label.Text = ""
+	}
+
 }
 
 func (b *TextFieldComponent) String() string {

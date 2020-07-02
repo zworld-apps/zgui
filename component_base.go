@@ -1,11 +1,15 @@
 package zgui
 
 import (
+	"zworld/events"
+
 	rl "github.com/xzebra/raylib-go/raylib"
 )
 
 type baseComponent struct {
 	IConstraints
+	events.IObservable
+
 	components []IComponent
 
 	State GuiState
@@ -14,12 +18,14 @@ type baseComponent struct {
 func newBaseComponent() *baseComponent {
 	return &baseComponent{
 		IConstraints: DefaultConstraints(),
-		State:        StateNormal,
+		IObservable: NewObservable([]events.EventID{
+			events.Hover, events.Clicked,
+		}),
+		State: StateNormal,
 	}
 }
 
 func (b *baseComponent) setConstraints(constraints IConstraints) {
-	// b.IConstraints = constraints
 	b.IConstraints.SetX(constraints.GetXConstraint())
 	b.IConstraints.SetY(constraints.GetYConstraint())
 	b.IConstraints.SetWidth(constraints.GetWidthConstraint())
@@ -38,6 +44,21 @@ func (b *baseComponent) Add(component IComponent, constraints IConstraints) {
 }
 
 func (b *baseComponent) Update(dt float32) {
+	// Check possible events
+	hover := tf.MouseInBounds(rl.GetMouseX(), rl.GetMouseY())
+	tapped := rl.IsMouseButtonPressed(rl.MouseLeftButton) ||
+		rl.IsGestureDetected(rl.GestureTap)
+	touched := (hover && tapped) || tf.TouchInBounds()
+
+	if hover {
+		b.Notify(events.Hover)
+	}
+
+	if tapped || touched {
+		b.Notify(events.Clicked)
+	}
+
+	// Update child components
 	for _, component := range b.components {
 		component.Update(dt)
 	}
