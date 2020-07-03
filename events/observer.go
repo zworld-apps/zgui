@@ -9,11 +9,12 @@ type eventCallback func(EventID)
 
 type IObservable interface {
 	On(EventID, IObserver, eventCallback) error
+	Notify(EventID) error
 }
 
 type IObserver interface {
 	setCallback(EventID, eventCallback)
-	Update()
+	Update(EventID)
 }
 
 type ISubject interface {
@@ -28,8 +29,16 @@ type Observer struct {
 	callbacks map[EventID]eventCallback
 }
 
+func NewObserver() *Observer {
+	return &Observer{
+		callbacks: make(map[EventID]eventCallback),
+	}
+}
+
 func (o *Observer) Update(id EventID) {
-	o.callbacks[id](id)
+	if callback, exists := o.callbacks[id]; exists {
+		callback(id)
+	}
 }
 
 func (o *Observer) setCallback(id EventID, callback eventCallback) {
@@ -69,7 +78,7 @@ func (s *Subject) Detach(observer IObserver) {
 func (s *Subject) Notify() {
 	for obs := s.observers.Front(); obs != nil; obs = obs.Next() {
 		observer := obs.Value.(IObserver)
-		observer.Update()
+		observer.Update(s.id)
 	}
 }
 
@@ -83,7 +92,7 @@ func NewObservable(observableEvents []EventID) *Observable {
 	}
 
 	for _, event := range observableEvents {
-		subjects[event] = NewSubject(event)
+		obs.subjects[event] = NewSubject(event)
 	}
 
 	return obs
@@ -99,6 +108,11 @@ func (o *Observable) On(id EventID, observer IObserver, callback eventCallback) 
 	return nil
 }
 
-func (o *Observable) Notify(id EventID) {
-	o.subjects[id].Notify()
+func (o *Observable) Notify(id EventID) error {
+	if subject, exists := o.subjects[id]; exists {
+		subject.Notify()
+		return nil
+	}
+
+	return errors.New("can't notify unregistered event")
 }

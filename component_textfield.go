@@ -2,6 +2,7 @@ package zgui
 
 import (
 	"fmt"
+	"zgui/events"
 
 	rl "github.com/xzebra/raylib-go/raylib"
 )
@@ -23,6 +24,8 @@ const (
 
 type TextFieldComponent struct {
 	*baseComponent
+	events.IObserver
+
 	Box   *LineBoxComponent
 	Label *LabelComponent
 
@@ -39,10 +42,25 @@ type TextFieldComponent struct {
 func NewTextFieldComponent(options *TextFieldOptions) *TextFieldComponent {
 	tf := &TextFieldComponent{
 		baseComponent: newBaseComponent(),
+		IObserver:     events.NewObserver(),
 		Box:           NewLineBoxComponent(options.Box),
 		Label:         NewLabelComponent("", options.Text),
 		opt:           options,
 	}
+
+	tf.baseComponent.On(events.Pressed, tf.IObserver, func(_ events.EventID) {
+		rl.ShowKeyboard(true)
+	})
+
+	tf.baseComponent.On(events.Focused, tf.IObserver, func(_ events.EventID) {
+		tf.timer = 0
+		tf.showBar = true
+	})
+
+	tf.baseComponent.On(events.Unfocused, tf.IObserver, func(_ events.EventID) {
+		tf.showBar = false
+		// rl.ShowKeyboard(false)
+	})
 
 	tf.Box.Add(tf.Label, DefaultConstraints())
 	tf.baseComponent.Add(tf.Box, DefaultConstraints())
@@ -83,25 +101,7 @@ func (tf *TextFieldComponent) removeChar() {
 }
 
 func (tf *TextFieldComponent) Update(dt float32) {
-	hover := tf.MouseInBounds(rl.GetMouseX(), rl.GetMouseY())
-	tapped := rl.IsMouseButtonPressed(rl.MouseLeftButton) ||
-		rl.IsGestureDetected(rl.GestureTap)
-	touched := (hover && tapped) || tf.TouchInBounds()
-
-	if hover {
-		if touched && tf.State != StatePressed {
-			tf.SetState(StatePressed)
-			tf.timer = 0
-			rl.ShowKeyboard(true)
-		} else if tf.State == StateNormal {
-			tf.SetState(StateFocused)
-			tf.showBar = false
-		}
-	} else if tf.State == StateFocused || tapped {
-		tf.SetState(StateNormal)
-		tf.showBar = false
-		// rl.ShowKeyboard(false)
-	}
+	tf.baseComponent.Update(dt)
 
 	if !tf.IsSelected() {
 		return

@@ -3,9 +3,15 @@ package events
 type EventID int32
 
 const (
-	Hover EventID = iota
-	Clicked
+	Hovered EventID = iota
+	Unhovered
+	Pressed
+	Released
+	Focused
+	Unfocused
+	Enabled
 	Disabled
+	Opened
 	Closed
 	Moved
 )

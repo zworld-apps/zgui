@@ -1,7 +1,7 @@
 package zgui
 
 import (
-	"zworld/events"
+	"zgui/events"
 
 	rl "github.com/xzebra/raylib-go/raylib"
 )
@@ -18,8 +18,8 @@ type baseComponent struct {
 func newBaseComponent() *baseComponent {
 	return &baseComponent{
 		IConstraints: DefaultConstraints(),
-		IObservable: NewObservable([]events.EventID{
-			events.Hover, events.Clicked,
+		IObservable: events.NewObservable([]events.EventID{
+			events.Hovered, events.Unhovered, events.Pressed, events.Released, events.Focused, events.Unfocused,
 		}),
 		State: StateNormal,
 	}
@@ -45,17 +45,27 @@ func (b *baseComponent) Add(component IComponent, constraints IConstraints) {
 
 func (b *baseComponent) Update(dt float32) {
 	// Check possible events
-	hover := tf.MouseInBounds(rl.GetMouseX(), rl.GetMouseY())
+	hover := b.MouseInBounds(rl.GetMouseX(), rl.GetMouseY())
 	tapped := rl.IsMouseButtonPressed(rl.MouseLeftButton) ||
 		rl.IsGestureDetected(rl.GestureTap)
-	touched := (hover && tapped) || tf.TouchInBounds()
+	touched := (hover && tapped) || b.TouchInBounds()
 
-	if hover {
-		b.Notify(events.Hover)
-	}
-
-	if tapped || touched {
-		b.Notify(events.Clicked)
+	switch {
+	case touched: // if object touched
+		b.SetState(StatePressed)
+	case tapped: // if user clicked but not inside
+		b.SetState(StateNormal)
+	case hover:
+		if b.GetState() == StatePressed {
+			break
+		}
+		b.SetState(StateHover)
+	default:
+		if b.GetState() == StatePressed {
+			b.SetState(StateFocused)
+		} else if b.GetState() != StateFocused {
+			b.SetState(StateNormal)
+		}
 	}
 
 	// Update child components
@@ -86,7 +96,7 @@ func (b *baseComponent) MouseInBounds(mx, my int32) bool {
 }
 
 func (b *baseComponent) IsSelected() bool {
-	return b.State == StatePressed
+	return b.State == StatePressed || b.State == StateFocused
 }
 
 func (b *baseComponent) GetState() GuiState {
@@ -94,5 +104,34 @@ func (b *baseComponent) GetState() GuiState {
 }
 
 func (b *baseComponent) SetState(val GuiState) {
+	if b.GetState() == val {
+		return
+	}
+
+	// Conditions ordered by priority
+	switch b.GetState() {
+	case StatePressed:
+		if val == StateHover {
+			val = StateFocused
+		}
+		// b.Notify(events.Released)
+	case StateFocused:
+		if val == StateHover {
+			return
+		}
+		b.Notify(events.Unfocused)
+	case StateHover:
+		b.Notify(events.Unhovered)
+	}
+
+	switch val {
+	case StateFocused:
+		b.Notify(events.Focused)
+	case StateHover:
+		b.Notify(events.Hovered)
+	case StatePressed:
+		b.Notify(events.Pressed)
+	}
+
 	b.State = val
 }
