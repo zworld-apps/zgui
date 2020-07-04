@@ -6,7 +6,7 @@
 
 **zgui** is a GUI system based on Constraints, which uses `raylib`.
 
-[[https://i.imgur.com/3IA243l.png]]
+[![Example image](https://i.imgur.com/3IA243l.png)]
 
 ## Example
 
