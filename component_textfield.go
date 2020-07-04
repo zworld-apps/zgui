@@ -24,7 +24,6 @@ const (
 
 type TextFieldComponent struct {
 	*baseComponent
-	events.IObserver
 
 	Box   *LineBoxComponent
 	Label *LabelComponent
@@ -42,22 +41,21 @@ type TextFieldComponent struct {
 func NewTextFieldComponent(options *TextFieldOptions) *TextFieldComponent {
 	tf := &TextFieldComponent{
 		baseComponent: newBaseComponent(),
-		IObserver:     events.NewObserver(),
 		Box:           NewLineBoxComponent(options.Box),
 		Label:         NewLabelComponent("", options.Text),
 		opt:           options,
 	}
 
-	tf.baseComponent.On(events.Pressed, tf.IObserver, func(_ events.EventID) {
+	tf.On(events.Pressed, func(_ events.EventID) {
 		rl.ShowKeyboard(true)
 	})
 
-	tf.baseComponent.On(events.Focused, tf.IObserver, func(_ events.EventID) {
+	tf.On(events.Focused, func(_ events.EventID) {
 		tf.timer = 0
 		tf.showBar = true
 	})
 
-	tf.baseComponent.On(events.Unfocused, tf.IObserver, func(_ events.EventID) {
+	tf.On(events.Unfocused, func(_ events.EventID) {
 		tf.showBar = false
 		// rl.ShowKeyboard(false)
 	})

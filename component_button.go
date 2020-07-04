@@ -22,11 +22,10 @@ type ButtonComponent struct {
 func NewButtonComponent(options *ButtonOptions) *ButtonComponent {
 	b := &ButtonComponent{
 		BoxComponent: NewBoxComponent(options.Box),
-		IObserver:    events.NewObserver(),
 		opt:          options,
 	}
 
-	b.On(events.Pressed, b.IObserver, func(_ events.EventID) {
+	b.On(events.Pressed, func(_ events.EventID) {
 		b.opt.PressCallback(b)
 	})
 

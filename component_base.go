@@ -8,7 +8,7 @@ import (
 
 type baseComponent struct {
 	IConstraints
-	events.IObservable
+	events.IObserver
 
 	components []IComponent
 
@@ -18,7 +18,7 @@ type baseComponent struct {
 func newBaseComponent() *baseComponent {
 	return &baseComponent{
 		IConstraints: DefaultConstraints(),
-		IObservable: events.NewObservable([]events.EventID{
+		IObserver: events.NewObserver([]events.EventID{
 			events.Hovered, events.Unhovered, events.Pressed, events.Released, events.Focused, events.Unfocused,
 		}),
 		State: StateNormal,
