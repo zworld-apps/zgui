@@ -21,18 +21,18 @@ constraints.SetY(zgui.NewCenterConstraint())
 constraints.SetWidth(zgui.NewRelativeConstraint(func(x float32) float32 {
     return x * 0.3
 }))
+
+greenBox := zgui.NewBoxComponent(&zgui.BoxOptions{
+    Color:     rl.Green,
+    Roundness: 0.1,
+    Segments:  20,
+})
 ```
 
 After describing the component, you can add it to a parent element. The root
 component is `display`.
 
 ``` go
-greenBox := zgui.NewBoxComponent(&zgui.BoxOptions{
-    Color:     rl.Green,
-    Roundness: 0.1,
-    Segments:  20,
-})
-
 display.Add(greenBox, constraints)
 ```
 
