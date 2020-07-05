@@ -1,7 +1,6 @@
 package zgui
 
 import (
-	"fmt"
 	"zgui/events"
 
 	rl "github.com/xzebra/raylib-go/raylib"
@@ -88,15 +87,15 @@ func (b *baseComponent) Update(dt float32) {
 	default:
 		if b.GetState() == StatePressed {
 			b.SetState(StateFocused)
-		} else if b.GetState() != StateFocused {
+		} else if b.GetState() != StateFocused && b.GetState() != StateDragging {
 			b.SetState(StateNormal)
 		}
 	}
 
 	// Dragging behavior
 	if b.GetState() == StateDragging {
-		if !touched {
-			fmt.Println(touched)
+		hold := rl.IsMouseButtonDown(rl.MouseLeftButton) || rl.IsGestureDetected(rl.GestureHold)
+		if !hold {
 			b.SetState(StateFocused)
 		} else {
 			mPos := rl.GetMousePosition()

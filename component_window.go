@@ -91,8 +91,6 @@ func (w *WindowComponent) Update(dt float32) {
 		return
 	}
 
-	fmt.Println(w.GetState())
-
 	if w.GetState() == StateHidden {
 		return
 	}
