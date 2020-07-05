@@ -35,6 +35,10 @@ func (c PixelConstraint) GetHeight() float32 {
 	return c.val
 }
 
+func (c *PixelConstraint) move(d float32) {
+	c.val += d
+}
+
 // String returns a string representation of the constraint.
 func (c PixelConstraint) String() string {
 	return "PixelConstraint"

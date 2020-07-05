@@ -1,19 +1,22 @@
 package zgui
 
-import "fmt"
+import (
+	"fmt"
+	"zgui/events"
+)
 
 type WindowOptions struct {
-	Bar     *BoxOptions
-	Close   *TextOptions
-	Content *BoxOptions
+	Bar      *BoxOptions
+	CloseBtn *TextOptions
+	Content  *BoxOptions
 }
 
 type WindowComponent struct {
 	*baseComponent
 
-	Bar     *BoxComponent
-	Close   *LabelComponent
-	Content *BoxComponent
+	Bar      *BoxComponent
+	CloseBtn *LabelComponent
+	Content  *BoxComponent
 
 	opt *WindowOptions
 }
@@ -24,7 +27,7 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	w := &WindowComponent{
 		baseComponent: newBaseComponent(),
 		Bar:           NewBoxComponent(options.Bar),
-		Close:         NewLabelComponent("X", options.Close),
+		CloseBtn:      NewLabelComponent("X", options.CloseBtn),
 		Content:       NewBoxComponent(options.Content),
 		opt:           options,
 	}
@@ -37,15 +40,27 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 		height: NewPixelConstraint(windowBarHeight),
 	})
 
+	w.Bar.On(events.Pressed, func() {
+		w.SetState(StateDragging)
+	})
+
+	w.Bar.On(events.Released, func() {
+		w.SetState(StateFocused)
+	})
+
 	// Add close button to window bar component
-	w.Bar.Add(w.Close, &Constraints{
+	w.Bar.Add(w.CloseBtn, &Constraints{
 		x: NewOperationalConstraint(func(c IConstraint) float32 {
 			// Position the X button at the end of the window bar
 			return c.parent().GetX() + (c.parent().GetWidth() - windowBarHeight)
 		}),
 		y:      NewFillConstraint(),
-		width:  NewFillConstraint(),
+		width:  NewAspectConstraint(1.0),
 		height: NewFillConstraint(),
+	})
+
+	w.CloseBtn.On(events.Pressed, func() {
+		w.Close()
 	})
 
 	// Add content box to base component
@@ -59,6 +74,29 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	})
 
 	return w
+}
+
+func (w *WindowComponent) Open() {
+	w.SetState(StateNormal)
+	w.Notify(events.Opened)
+}
+
+func (w *WindowComponent) Close() {
+	w.SetState(StateHidden)
+	w.Notify(events.Closed)
+}
+
+func (w *WindowComponent) Update(dt float32) {
+	if w == nil {
+		return
+	}
+
+	fmt.Println(w.GetState())
+
+	if w.GetState() == StateHidden {
+		return
+	}
+	w.baseComponent.Update(dt)
 }
 
 func (w *WindowComponent) String() string {

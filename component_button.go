@@ -25,7 +25,7 @@ func NewButtonComponent(options *ButtonOptions) *ButtonComponent {
 		opt:          options,
 	}
 
-	b.On(events.Pressed, func(_ events.EventID) {
+	b.On(events.Pressed, func() {
 		b.opt.PressCallback(b)
 	})
 

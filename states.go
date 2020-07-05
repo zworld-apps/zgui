@@ -8,6 +8,8 @@ const (
 	StateFocused
 	StatePressed
 	StateDisabled
+	StateHidden
+	StateDragging
 )
 
 func (s GuiState) String() string {
@@ -22,6 +24,10 @@ func (s GuiState) String() string {
 		return "StatePressed"
 	case StateDisabled:
 		return "StateDisabled"
+	case StateHidden:
+		return "StateHidden"
+	case StateDragging:
+		return "StateDragging"
 	}
 
 	return "nil"

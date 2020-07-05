@@ -46,16 +46,16 @@ func NewTextFieldComponent(options *TextFieldOptions) *TextFieldComponent {
 		opt:           options,
 	}
 
-	tf.On(events.Pressed, func(_ events.EventID) {
+	tf.On(events.Pressed, func() {
 		rl.ShowKeyboard(true)
 	})
 
-	tf.On(events.Focused, func(_ events.EventID) {
+	tf.On(events.Focused, func() {
 		tf.timer = 0
 		tf.showBar = true
 	})
 
-	tf.On(events.Unfocused, func(_ events.EventID) {
+	tf.On(events.Unfocused, func() {
 		tf.showBar = false
 		// rl.ShowKeyboard(false)
 	})

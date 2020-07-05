@@ -75,6 +75,12 @@ func (c Constraints) GetBounds() rl.Rectangle {
 	}
 }
 
+// move requires X and Y constraints to be movable to actually work.
+func (c *Constraints) move(dx, dy float32) {
+	c.x.move(dx)
+	c.y.move(dy)
+}
+
 func (c Constraints) GetXConstraint() IConstraint {
 	return c.x
 }
