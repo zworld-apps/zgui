@@ -50,6 +50,10 @@ func (c baseConstraint) GetHeight() float32 {
 	return 0
 }
 
+func (c *baseConstraint) move(d float32) {
+	return
+}
+
 // String returns a string representation of the constraint.
 func (c baseConstraint) String() string {
 	return fmt.Sprintf("baseConstraint{%v}", c.parentConstraints)

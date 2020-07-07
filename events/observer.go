@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-type eventCallback func(EventID)
+type eventCallback func()
 
 type IObserver interface {
 	On(EventID, eventCallback) error
@@ -18,14 +18,11 @@ type ISubject interface {
 }
 
 type Subject struct {
-	id       EventID
 	callback eventCallback
 }
 
-func NewSubject(id EventID) *Subject {
-	return &Subject{
-		id: id,
-	}
+func NewSubject() *Subject {
+	return &Subject{}
 }
 
 func (s *Subject) Attach(callback eventCallback) {
@@ -38,7 +35,7 @@ func (s *Subject) Detach() {
 
 func (s *Subject) Notify() {
 	if s.callback != nil {
-		s.callback(s.id)
+		s.callback()
 	}
 }
 
@@ -52,7 +49,7 @@ func NewObserver(observableEvents []EventID) *Observer {
 	}
 
 	for _, event := range observableEvents {
-		obs.subjects[event] = NewSubject(event)
+		obs.subjects[event] = NewSubject()
 	}
 
 	return obs

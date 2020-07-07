@@ -73,7 +73,7 @@ func main() {
 			Roundness: 0.3,
 			Segments:  8,
 		},
-		Close: &zgui.TextOptions{
+		CloseBtn: &zgui.TextOptions{
 			Color: rl.White,
 		},
 		Content: &zgui.BoxOptions{
