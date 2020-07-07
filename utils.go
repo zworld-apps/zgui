@@ -8,7 +8,7 @@ import (
 const displayPadding = 10
 
 // holdInsideWindow holds the mouse inside window frame.
-func holdInsideWindow(mouse *rl.Vector2) {
+func holdInsideWindow(mouse rl.Vector2) rl.Vector2 {
 	sw, sh := float32(rl.GetScreenWidth()), float32(rl.GetScreenHeight())
 	if mouse.X > (sw - displayPadding) {
 		mouse.X = sw - displayPadding
@@ -21,4 +21,6 @@ func holdInsideWindow(mouse *rl.Vector2) {
 	} else if mouse.Y < 0 {
 		mouse.Y = displayPadding
 	}
+
+	return mouse
 }

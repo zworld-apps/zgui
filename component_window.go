@@ -47,9 +47,8 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	// After marking it as draggable, we have to handle
 	// the dragging event
 	w.Bar.On(events.Dragged, func() {
-		mPos := rl.GetMousePosition()
+		mPos := holdInsideWindow(rl.GetMousePosition())
 		// Avoid window from leaving display
-		holdInsideWindow(&mPos)
 		// Move the whole window component
 		w.baseComponent.IConstraints.move(
 			mPos.X-w.Bar.lastPos.X,
@@ -99,8 +98,6 @@ func (w *WindowComponent) Update(dt float32) {
 	if w == nil {
 		return
 	}
-
-	fmt.Println(w.Bar.GetState())
 
 	if w.GetState() == StateHidden {
 		return

@@ -1,7 +1,6 @@
 package zgui
 
 import (
-	"fmt"
 	"zgui/events"
 
 	rl "github.com/xzebra/raylib-go/raylib"
@@ -108,11 +107,15 @@ func pressedUpdate(sm iStateManager, dt float32) {
 
 	switch {
 	case sm.Component().IsDraggable() && input.Held:
-		fmt.Println("set state dragging")
 		sm.Change(StateDragging)
 	case !input.Touched: // no longer pressed
 		sm.Change(StateFocused)
 	}
+}
+
+func draggingEnter(sm iStateManager) {
+	// Store the starting mouse position
+	sm.Component().lastPos = holdInsideWindow(rl.GetMousePosition())
 }
 
 func draggingUpdate(sm iStateManager, dt float32) {
@@ -123,18 +126,8 @@ func draggingUpdate(sm iStateManager, dt float32) {
 		sm.Change(StateFocused)
 	default:
 		sm.Component().Notify(events.Dragged)
+
 		// Update window last position for the next calc
-		sm.Component().lastPos = rl.GetMousePosition()
+		sm.Component().lastPos = holdInsideWindow(rl.GetMousePosition())
 	}
-}
-
-// ----------------------
-// --- DRAGGING STATE ---
-// ----------------------
-
-func draggingEnter(sm iStateManager) {
-	mPos := rl.GetMousePosition()
-	holdInsideWindow(&mPos)
-	// Store the starting mouse position
-	sm.Component().lastPos = mPos
 }
