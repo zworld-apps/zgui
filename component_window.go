@@ -3,6 +3,8 @@ package zgui
 import (
 	"fmt"
 	"zgui/events"
+
+	rl "github.com/xzebra/raylib-go/raylib"
 )
 
 type WindowOptions struct {
@@ -40,12 +42,19 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 		height: NewPixelConstraint(windowBarHeight),
 	})
 
-	w.Bar.On(events.Pressed, func() {
-		w.SetState(StateDragging)
-	})
-
-	w.Bar.On(events.Released, func() {
-		w.SetState(StateFocused)
+	// We will be able to drag the bar element
+	w.Bar.SetDraggable(true)
+	// After marking it as draggable, we have to handle
+	// the dragging event
+	w.Bar.On(events.Dragged, func() {
+		mPos := rl.GetMousePosition()
+		// Avoid window from leaving display
+		holdInsideWindow(&mPos)
+		// Move the whole window component
+		w.baseComponent.IConstraints.move(
+			mPos.X-w.Bar.lastPos.X,
+			mPos.Y-w.Bar.lastPos.Y,
+		)
 	})
 
 	// Add close button to window bar component
@@ -90,6 +99,8 @@ func (w *WindowComponent) Update(dt float32) {
 	if w == nil {
 		return
 	}
+
+	fmt.Println(w.Bar.GetState())
 
 	if w.GetState() == StateHidden {
 		return
