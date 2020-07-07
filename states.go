@@ -48,12 +48,12 @@ type state struct {
 }
 
 var globalStateBehaviors = map[GuiState]*state{
-	StateNormal:   &state{Update: normalUpdate},
-	StateHover:    &state{Update: hoverUpdate, EnterEvent: events.Hovered, ExitEvent: events.Unhovered},
-	StateFocused:  &state{Update: focusedUpdate, EnterEvent: events.Focused, ExitEvent: events.Unfocused},
-	StatePressed:  &state{Update: pressedUpdate, EnterEvent: events.Pressed, ExitEvent: events.Released},
-	StateDragging: &state{Enter: draggingEnter, Update: draggingUpdate, ExitEvent: events.Released},
-	StateHidden:   &state{EnterEvent: events.Closed, ExitEvent: events.Opened},
+	StateNormal:   {Update: normalUpdate},
+	StateHover:    {Update: hoverUpdate, EnterEvent: events.Hovered, ExitEvent: events.Unhovered},
+	StateFocused:  {Update: focusedUpdate, EnterEvent: events.Focused, ExitEvent: events.Unfocused},
+	StatePressed:  {Update: pressedUpdate, EnterEvent: events.Pressed, ExitEvent: events.Released},
+	StateDragging: {Enter: draggingEnter, Update: draggingUpdate, ExitEvent: events.Released},
+	StateHidden:   {EnterEvent: events.Closed, ExitEvent: events.Opened},
 }
 
 type inputEvents struct{ Hover, Tapped, Held, Touched bool }

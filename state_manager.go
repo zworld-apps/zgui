@@ -2,7 +2,6 @@ package zgui
 
 import (
 	"fmt"
-	"zgui/events"
 )
 
 type iStateManager interface {
@@ -43,7 +42,7 @@ func (sm *stateManager) Change(id GuiState) {
 		current.Exit(sm)
 		// current.Inited = false
 	}
-	if current.ExitEvent != events.Null {
+	if !current.ExitEvent.IsNull() {
 		sm.component.Notify(current.ExitEvent)
 	}
 
@@ -52,7 +51,7 @@ func (sm *stateManager) Change(id GuiState) {
 		state.Enter(sm)
 		// state.Inited = true
 	}
-	if state.EnterEvent != events.Null {
+	if !state.EnterEvent.IsNull() {
 		sm.component.Notify(current.EnterEvent)
 	}
 
