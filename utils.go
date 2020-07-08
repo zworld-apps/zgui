@@ -24,3 +24,13 @@ func holdInsideWindow(mouse rl.Vector2) rl.Vector2 {
 
 	return mouse
 }
+
+func clamp(value, min, max float32) float32 {
+	if value < min {
+		return min
+	}
+	if value > max {
+		return max
+	}
+	return value
+}

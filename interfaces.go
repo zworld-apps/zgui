@@ -34,6 +34,7 @@ type IConstraint interface {
 	parent() IConstraints
 
 	move(d float32)
+	SetRelativeValue(val float32)
 }
 
 type IConstraints interface {
@@ -53,6 +54,7 @@ type IConstraints interface {
 	GetWidthConstraint() IConstraint
 
 	GetBounds() rl.Rectangle
+	GetParentBounds() rl.Rectangle
 
 	move(dx, dy float32)
 }
@@ -66,6 +68,8 @@ type IComponent interface {
 
 	setConstraints(IConstraints)
 	GetConstraints() IConstraints
+
+	GetState() GuiState
 
 	Add(IComponent, IConstraints)
 

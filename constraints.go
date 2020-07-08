@@ -10,7 +10,6 @@ import (
 // applied to a UI element
 type Constraints struct {
 	x, y, width, height IConstraint
-	container           IContainer
 	parent              IConstraints
 }
 
@@ -43,7 +42,7 @@ func (c *Constraints) SetHeight(constraint IConstraint) {
 	c.height = constraint
 }
 
-func (c Constraints) getParentBounds() rl.Rectangle {
+func (c Constraints) GetParentBounds() rl.Rectangle {
 	if c.parent == nil {
 		return rl.Rectangle{0, 0, 0, 0}
 	}

@@ -35,7 +35,7 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	}
 
 	// Add window bar to base component
-	w.Add(w.Bar, &Constraints{
+	w.baseComponent.Add(w.Bar, &Constraints{
 		x:      NewFillConstraint(),
 		y:      NewFillConstraint(),
 		width:  NewFillConstraint(),
@@ -47,8 +47,8 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	// After marking it as draggable, we have to handle
 	// the dragging event
 	w.Bar.On(events.Dragged, func() {
-		mPos := holdInsideWindow(rl.GetMousePosition())
 		// Avoid window from leaving display
+		mPos := holdInsideWindow(rl.GetMousePosition())
 		// Move the whole window component
 		w.baseComponent.IConstraints.move(
 			mPos.X-w.Bar.lastPos.X,
@@ -72,12 +72,12 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	})
 
 	// Add content box to base component
-	w.Add(w.Content, &Constraints{
+	w.baseComponent.Add(w.Content, &Constraints{
 		x:     NewFillConstraint(),
 		y:     NewPixelConstraint(windowBarHeight),
 		width: NewFillConstraint(),
-		height: NewRelativeConstraint(func(x float32) float32 {
-			return x - windowBarHeight
+		height: NewRelativeConstraint(windowBarHeight).SetOperation(func(x, y float32) float32 {
+			return x - y
 		}),
 	})
 
@@ -103,6 +103,10 @@ func (w *WindowComponent) Update(dt float32) {
 		return
 	}
 	w.baseComponent.Update(dt)
+}
+
+func (w *WindowComponent) Add(component IComponent, constraints IConstraints) {
+	w.Content.Add(component, constraints)
 }
 
 func (w *WindowComponent) String() string {

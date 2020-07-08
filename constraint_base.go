@@ -54,6 +54,10 @@ func (c *baseConstraint) move(d float32) {
 	return
 }
 
+func (c *baseConstraint) SetRelativeValue(val float32) {
+	fmt.Println("zgui: constraint doesn't implement SetRelativeValue")
+}
+
 // String returns a string representation of the constraint.
 func (c baseConstraint) String() string {
 	return fmt.Sprintf("baseConstraint{%v}", c.parentConstraints)

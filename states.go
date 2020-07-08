@@ -115,7 +115,7 @@ func pressedUpdate(sm iStateManager, dt float32) {
 
 func draggingEnter(sm iStateManager) {
 	// Store the starting mouse position
-	sm.Component().lastPos = holdInsideWindow(rl.GetMousePosition())
+	sm.Component().lastPos = rl.GetMousePosition()
 }
 
 func draggingUpdate(sm iStateManager, dt float32) {
@@ -125,9 +125,12 @@ func draggingUpdate(sm iStateManager, dt float32) {
 	case !input.Held: // no longer dragging
 		sm.Change(StateFocused)
 	default:
-		sm.Component().Notify(events.Dragged)
+		newPos := holdInsideWindow(rl.GetMousePosition())
 
-		// Update window last position for the next calc
-		sm.Component().lastPos = holdInsideWindow(rl.GetMousePosition())
+		if newPos != sm.Component().lastPos {
+			sm.Component().Notify(events.Dragged)
+			// Update last position for the next calc
+			sm.Component().lastPos = newPos
+		}
 	}
 }
