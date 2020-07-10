@@ -11,7 +11,7 @@ func main() {
 	rl.SetConfigFlags(rl.FlagWindowResizable)
 	rl.SetTargetFPS(60)
 
-	rl.InitWindow(800, 450, "raygui test")
+	rl.InitWindow(800, 450, "zgui test")
 
 	display := zgui.GetDisplay()
 
@@ -82,11 +82,15 @@ func main() {
 	constraints.SetHeight(zgui.NewPixelConstraint(300))
 	display.Add(window, constraints)
 
+	// PANEL
 	constraints = zgui.DefaultConstraints()
-	constraints.SetX(zgui.NewPixelConstraint(5))
-	constraints.SetY(zgui.NewPixelConstraint(5))
+	panel := zgui.NewPanelComponent(&zgui.PanelOptions{
+		Direction: zgui.DirColumn,
+	})
+	window.Add(panel, constraints)
+
+	constraints = zgui.DefaultConstraints()
 	constraints.SetWidth(zgui.NewPixelConstraint(20))
-	constraints.SetHeight(zgui.NewAspectConstraint(1.0))
 	checkbox := zgui.NewCheckboxComponent(&zgui.CheckboxOptions{
 		Box: &zgui.BoxOptions{
 			Color:     rl.Black,
@@ -97,13 +101,10 @@ func main() {
 			Color: rl.Black,
 		},
 	})
-	window.Add(checkbox, constraints)
+	panel.Add(checkbox, constraints)
 
 	constraints = zgui.DefaultConstraints()
-	constraints.SetX(zgui.NewCenterConstraint())
-	constraints.SetY(zgui.NewPixelConstraint(30))
 	constraints.SetWidth(zgui.NewRelativeConstraint(0.8))
-	constraints.SetHeight(zgui.NewPixelConstraint(20))
 	slider := zgui.NewSliderComponent(&zgui.SliderOptions{
 		Bar: &zgui.BoxOptions{
 			Color:     rl.Black,
@@ -116,7 +117,7 @@ func main() {
 			Segments:  30,
 		},
 	})
-	window.Add(slider, constraints)
+	panel.Add(slider, constraints)
 
 	for !rl.WindowShouldClose() {
 		rl.BeginDrawing()

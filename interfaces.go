@@ -62,7 +62,7 @@ type IConstraints interface {
 type IComponent interface {
 	IDrawable
 	IUpdateable
-	IContainer
+	IConstraints
 
 	fmt.Stringer
 

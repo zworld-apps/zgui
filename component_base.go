@@ -1,6 +1,7 @@
 package zgui
 
 import (
+	"fmt"
 	"zgui/events"
 
 	rl "github.com/xzebra/raylib-go/raylib"
@@ -57,6 +58,10 @@ func (b *baseComponent) Update(dt float32) {
 	for _, component := range b.components {
 		component.Update(dt)
 	}
+}
+
+func (b *baseComponent) ClearChildren() {
+	b.components = []IComponent{}
 }
 
 func (b *baseComponent) TouchInBounds() bool {
@@ -134,4 +139,8 @@ func (b *baseComponent) Draw() {
 		}
 		component.Draw()
 	}
+}
+
+func (s *baseComponent) String() string {
+	return fmt.Sprintf("baseComponent")
 }
