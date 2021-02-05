@@ -3,7 +3,7 @@ package zgui
 import (
 	"fmt"
 
-	rl "github.com/xzebra/raylib-go/raylib"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type IDrawable interface {
@@ -75,4 +75,8 @@ type IComponent interface {
 
 	TouchInBounds() bool
 	MouseInBounds(mx int32, my int32) bool
+}
+
+type IParent interface {
+	Children() []IContainer
 }

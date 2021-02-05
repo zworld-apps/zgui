@@ -17,6 +17,8 @@ type CheckboxComponent struct {
 }
 
 func NewCheckboxComponent(options *CheckboxOptions) *CheckboxComponent {
+	options.Mark.Align = AlignCenter
+
 	cb := &CheckboxComponent{
 		LineBoxComponent: NewLineBoxComponent(options.Box),
 		Mark:             NewLabelComponent("X", options.Mark),

@@ -13,6 +13,10 @@ type PanelComponent struct {
 
 	Components []IComponent
 
+	// margin adapts to the number of elements
+	margin float32
+	nElems float32
+
 	opt *PanelOptions
 }
 
@@ -25,41 +29,62 @@ func NewPanelComponent(options *PanelOptions) *PanelComponent {
 	}
 }
 
-func (s *PanelComponent) getComponentConstraints(last, comp IComponent, nElems float32) IConstraints {
-	margin := (1.0 - panelOcupation) / (nElems + 1)
-
-	switch s.opt.Direction {
-	case DirRow:
-		var xConstraint IConstraint
-		if last != nil {
-			xConstraint = NewRelatedConstraint(last, margin)
-		} else {
-			xConstraint = NewRelativeConstraint(margin)
-		}
-
-		return &Constraints{
-			x:      xConstraint,
-			y:      NewCenterConstraint(),
-			width:  NewRelativeConstraint(panelOcupation / nElems),
-			height: comp.GetHeightConstraint(),
-		}
-	case DirColumn:
-		var yConstraint IConstraint
-		if last != nil {
-			yConstraint = NewRelatedConstraint(last, margin)
-		} else {
-			yConstraint = NewRelativeConstraint(margin)
-		}
-
-		return &Constraints{
-			x:      NewCenterConstraint(),
-			y:      yConstraint,
-			width:  comp.GetWidthConstraint(),
-			height: NewRelativeConstraint(panelOcupation / nElems),
-		}
+func (s *PanelComponent) getComponentXConstraint(last, comp IComponent) IConstraint {
+	if s.opt.Direction == DirColumn {
+		return NewCenterConstraint()
 	}
 
-	return nil
+	if last != nil {
+		return NewRelatedConstraint(last, s.margin)
+	}
+	return NewRelativeConstraint(s.margin)
+}
+
+func (s *PanelComponent) getComponentYConstraint(last, comp IComponent) IConstraint {
+	if s.opt.Direction == DirRow {
+		return NewCenterConstraint()
+	}
+
+	if last != nil {
+		return NewRelatedConstraint(last, s.margin)
+	}
+	fmt.Println("relative", s.margin, s.GetY())
+	return NewRelativeConstraint(s.margin)
+
+}
+
+func (s *PanelComponent) getComponentHeightConstraint(comp IComponent) IConstraint {
+	constraint := comp.GetHeightConstraint()
+
+	// First of all, check if height is direction dependant
+	if s.opt.Direction == DirRow {
+		return constraint
+	}
+
+	// Check if it is a fit constraint
+	if _, ok := constraint.(*FitConstraint); ok {
+		// Adapt height to number of elements and desired ocupation
+		return NewRelativeConstraint(panelOcupation / s.nElems)
+	}
+
+	return constraint
+}
+
+func (s *PanelComponent) getComponentWidthConstraint(comp IComponent) IConstraint {
+	constraint := comp.GetWidthConstraint()
+
+	// First of all, check if width is direction dependant
+	if s.opt.Direction == DirColumn {
+		return constraint
+	}
+
+	// Check if it is a fixed size constraint
+	if _, ok := constraint.(*PixelConstraint); ok {
+		return constraint
+	}
+
+	// Adapt height to number of elements and desired ocupation
+	return NewRelativeConstraint(panelOcupation / s.nElems)
 }
 
 // buildPanel arranges all objects according to the configuration. It is called
@@ -67,23 +92,43 @@ func (s *PanelComponent) getComponentConstraints(last, comp IComponent, nElems f
 func (s *PanelComponent) buildPanel() {
 	s.baseComponent.ClearChildren()
 
-	nElems := float32(len(s.Components))
-	if nElems < 1 {
+	s.nElems = float32(len(s.Components))
+
+	if s.nElems < 1 {
 		return
 	}
 
+	s.margin = (1.0 - panelOcupation) / (s.nElems + 1)
+
 	var lastComponent IComponent = nil
 	for _, component := range s.Components {
-		s.baseComponent.Add(component, s.getComponentConstraints(
-			lastComponent, component, nElems,
-		))
+		s.baseComponent.Add(component, &Constraints{
+			x:      s.getComponentXConstraint(lastComponent, component),
+			y:      s.getComponentYConstraint(lastComponent, component),
+			width:  s.getComponentWidthConstraint(component),
+			height: s.getComponentHeightConstraint(component),
+		})
+
 		lastComponent = component
 	}
 }
 
 func (s *PanelComponent) Add(component IComponent, constraints IConstraints) {
 	s.Components = append(s.Components, component)
+
+	constraints.setParent(s.GetConstraints())
+	component.setConstraints(constraints)
+
 	s.buildPanel()
+}
+
+func (s *PanelComponent) Children() (out []IContainer) {
+	out = make([]IContainer, len(s.Components))
+	for i, component := range s.Components {
+		out[i] = component
+	}
+
+	return
 }
 
 func (s *PanelComponent) String() string {

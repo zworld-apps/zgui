@@ -3,16 +3,18 @@ package zgui
 import (
 	"fmt"
 
-	rl "github.com/xzebra/raylib-go/raylib"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type TextOptions struct {
 	Color rl.Color
+	Align Alignment
 }
 
 func NewTextOptions() *TextOptions {
 	return &TextOptions{
 		Color: rl.Black,
+		Align: AlignStart,
 	}
 }
 
@@ -31,7 +33,7 @@ func NewLabelComponent(text string, options *TextOptions) *LabelComponent {
 }
 
 func (b *LabelComponent) Draw() {
-	rl.DrawText(b.Text, int32(b.GetX()), int32(b.GetY()), int32(b.GetHeight()), b.opt.Color)
+	DrawText(b.Text, b.GetBounds(), b.opt.Align, b.GetHeight(), b.opt.Color)
 	b.baseComponent.Draw()
 }
 

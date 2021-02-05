@@ -3,7 +3,7 @@ package zgui
 import (
 	"fmt"
 
-	rl "github.com/xzebra/raylib-go/raylib"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 // Constraints handles all the constraints that will be

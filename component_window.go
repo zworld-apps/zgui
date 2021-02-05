@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"zgui/events"
 
-	rl "github.com/xzebra/raylib-go/raylib"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 type WindowOptions struct {

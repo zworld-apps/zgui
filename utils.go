@@ -1,7 +1,7 @@
 package zgui
 
 import (
-	rl "github.com/xzebra/raylib-go/raylib"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 // displayPadding is the separation from the OS window borders

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"zgui"
 
-	rl "github.com/xzebra/raylib-go/raylib"
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 func main() {
@@ -12,6 +12,8 @@ func main() {
 	rl.SetTargetFPS(60)
 
 	rl.InitWindow(800, 450, "zgui test")
+
+	zgui.LoadDefaultStyle()
 
 	display := zgui.GetDisplay()
 
@@ -83,19 +85,22 @@ func main() {
 	display.Add(window, constraints)
 
 	// PANEL
-	constraints = zgui.DefaultConstraints()
 	panel := zgui.NewPanelComponent(&zgui.PanelOptions{
 		Direction: zgui.DirColumn,
 	})
+	constraints = zgui.DefaultConstraints()
+	// constraints.SetHeight(zgui.NewFitConstraint(panel))
 	window.Add(panel, constraints)
 
 	constraints = zgui.DefaultConstraints()
+	constraints.SetHeight(zgui.NewPixelConstraint(20))
 	constraints.SetWidth(zgui.NewPixelConstraint(20))
 	checkbox := zgui.NewCheckboxComponent(&zgui.CheckboxOptions{
 		Box: &zgui.BoxOptions{
 			Color:     rl.Black,
-			Roundness: 0.2,
-			Segments:  30,
+			Roundness: 0.0,
+			Segments:  1,
+			LineThick: 1,
 		},
 		Mark: &zgui.TextOptions{
 			Color: rl.Black,
@@ -104,6 +109,7 @@ func main() {
 	panel.Add(checkbox, constraints)
 
 	constraints = zgui.DefaultConstraints()
+	constraints.SetHeight(zgui.NewPixelConstraint(20))
 	constraints.SetWidth(zgui.NewRelativeConstraint(0.8))
 	slider := zgui.NewSliderComponent(&zgui.SliderOptions{
 		Bar: &zgui.BoxOptions{
