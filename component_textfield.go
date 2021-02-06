@@ -47,7 +47,7 @@ func NewTextFieldComponent(options *TextFieldOptions) *TextFieldComponent {
 	}
 
 	tf.On(events.Pressed, func() {
-		rl.ShowKeyboard(true)
+		// rl.ShowKeyboard(true)
 	})
 
 	tf.On(events.Focused, func() {
@@ -71,7 +71,7 @@ func (tf *TextFieldComponent) SetState(val GuiState) {
 		tf.showBar = false
 	} else {
 		tf.timer = 0
-		rl.ShowKeyboard(true)
+		// rl.ShowKeyboard(true)
 	}
 	tf.baseComponent.SetState(val)
 }
