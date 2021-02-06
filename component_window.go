@@ -11,10 +11,32 @@ type WindowOptions struct {
 	Bar      *BoxOptions
 	CloseBtn *TextOptions
 	Content  *BoxOptions
+
+	RequiresFocus bool
+	Draggable     bool
+}
+
+var DefaultWindowOptions = &WindowOptions{
+	Bar: &BoxOptions{
+		Color:     rl.Blue,
+		Roundness: 0.3,
+		Segments:  8,
+	},
+	CloseBtn: &TextOptions{
+		Color: rl.White,
+	},
+	Content: &BoxOptions{
+		Color:     rl.White,
+		Roundness: 0,
+		Segments:  0,
+	},
 }
 
 type WindowComponent struct {
 	*baseComponent
+
+	ID      string
+	clicked bool
 
 	Bar      *BoxComponent
 	CloseBtn *LabelComponent
@@ -43,7 +65,7 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	})
 
 	// We will be able to drag the bar element
-	w.Bar.SetDraggable(true)
+	w.Bar.SetDraggable(options.Draggable)
 	// After marking it as draggable, we have to handle
 	// the dragging event
 	w.Bar.On(events.Dragged, func() {
@@ -84,6 +106,14 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	return w
 }
 
+func (w *WindowComponent) GetID() string {
+	return w.ID
+}
+
+func (w *WindowComponent) setID(v string) {
+	w.ID = v
+}
+
 func (w *WindowComponent) Open() {
 	w.SetState(StateNormal)
 	w.Notify(events.Opened)
@@ -92,6 +122,14 @@ func (w *WindowComponent) Open() {
 func (w *WindowComponent) Close() {
 	w.SetState(StateHidden)
 	w.Notify(events.Closed)
+}
+
+func (w *WindowComponent) IsOpen() bool {
+	return w.GetState() != StateHidden
+}
+
+func (w *WindowComponent) RequiresFocus() bool {
+	return w.opt.RequiresFocus
 }
 
 func (w *WindowComponent) Update(dt float32) {

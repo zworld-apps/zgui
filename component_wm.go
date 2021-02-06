@@ -9,8 +9,8 @@ const (
 	paddingBig = 10
 )
 
-type HUD struct {
-	windows        list.List
+type WindowManager struct {
+	windows        *list.List
 	selectedWindow IWindow
 
 	cooldown float32
@@ -18,32 +18,46 @@ type HUD struct {
 
 const selectCooldown = 0.2
 
-var Hud = MakeHUD()
+var Hud = MakeWindowManager()
 
-func MakeHUD() *HUD {
-	return &HUD{
+func MakeWindowManager() *WindowManager {
+	return &WindowManager{
 		windows: list.New(),
 	}
 }
 
-func (h *HUD) Clear() {
+func (h *WindowManager) Clear() {
 	// FIXME: might not be the best way to clear it
 	h.windows = list.New()
 	h.selectedWindow = nil
 }
 
-func (h *HUD) get(id string) IWindow {
+func (h *WindowManager) findWindow(id string) *list.Element {
 	for e := h.windows.Front(); e != nil; e = e.Next() {
-		window, _ := e.(IWindow)
+		window, _ := e.Value.(IWindow)
 		if window.GetID() == id {
-			return window
+			return e
 		}
 	}
+
 	return nil
 }
 
-func (h *HUD) AddWindow(id string, win IWindow) {
-	if h.get(id) {
+func (h *WindowManager) get(id string) (win IWindow, ok bool) {
+	// Find window in list
+	elem := h.findWindow(id)
+	if elem == nil {
+		return nil, false
+	}
+
+	// Try to get the window element
+	win, ok = elem.Value.(IWindow)
+	return
+}
+
+func (h *WindowManager) AddWindow(id string, win IWindow) {
+	// Don't add window if already exists.
+	if _, exists := h.get(id); exists {
 		return
 	}
 
@@ -51,15 +65,14 @@ func (h *HUD) AddWindow(id string, win IWindow) {
 	h.windows.PushBack(win)
 }
 
-func (h *HUD) RemoveWindow(id string) {
-	if window, exists := h.get(id); exists {
-		h.Remove(window)
-	}
+func (h *WindowManager) RemoveWindow(id string) {
+	elem := h.findWindow(id)
+	h.windows.Remove(elem)
 }
 
-func (h *HUD) IsFocused() bool {
+func (h *WindowManager) IsFocused() bool {
 	for e := h.windows.Front(); e != nil; e = e.Next() {
-		window, _ := e.(IWindow)
+		window, _ := e.Value.(IWindow)
 		if window.IsSelected() && window.RequiresFocus() {
 			return true
 		}
@@ -67,13 +80,13 @@ func (h *HUD) IsFocused() bool {
 	return false
 }
 
-func (h *HUD) IsSelected() bool {
+func (h *WindowManager) IsSelected() bool {
 	if h.cooldown > 0 {
 		return true
 	}
 
 	for e := h.windows.Front(); e != nil; e = e.Next() {
-		window, _ := e.(IWindow)
+		window, _ := e.Value.(IWindow)
 		if window.IsSelected() {
 			return true
 		}
@@ -81,16 +94,16 @@ func (h *HUD) IsSelected() bool {
 	return false
 }
 
-func (h *HUD) GetWindow(id string) IWindow {
-	e := h.get(id)
-	if win != nil {
-		return win.(IWindow)
+func (h *WindowManager) GetWindow(id string) IWindow {
+	win, ok := h.get(id)
+	if ok {
+		return win
 	} else {
 		return nil
 	}
 }
 
-func (h *HUD) Update(dt float32) {
+func (h *WindowManager) Update(dt float32) {
 	h.cooldown -= dt
 	if h.cooldown < 0 {
 		h.cooldown = 0
@@ -120,10 +133,10 @@ func (h *HUD) Update(dt float32) {
 			return
 		}
 
-		window, _ := e.(IWindow)
+		window, _ := e.Value.(IWindow)
 		window.Update(dt)
 
-		if window.WasClicked() || window.IsDragged() {
+		if window.GetState() == StatePressed || window.GetState() == StateDragging {
 			if h.selectedWindow != nil && h.selectedWindow != window {
 				h.selectedWindow.SetSelected(false)
 			}
@@ -132,16 +145,16 @@ func (h *HUD) Update(dt float32) {
 	}
 }
 
-func (h *HUD) Draw() {
+func (h *WindowManager) Draw() {
 	for e := h.windows.Back(); e != nil; e = e.Prev() {
-		window, _ := e.(IWindow)
+		window, _ := e.Value.(IWindow)
 		window.Draw()
-	})
+	}
 }
 
-func (h *HUD) ErrorWindow(id, error string, closeCallback func()) {
-	alertWindow := NewMessage("Error:<br><br>"+error, 24)
-	alertWindow.SetCloseCallback(closeCallback)
+func (h *WindowManager) ErrorWindow(id, error string, closeCallback func()) {
+	alertWindow := NewMessage("Error:<br><br>"+error, 24, DefaultWindowOptions)
+	// TODO: alertWindow.SetCloseCallback(closeCallback)
 	h.AddWindow(id, alertWindow)
 	alertWindow.Open()
 }

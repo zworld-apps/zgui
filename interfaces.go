@@ -80,3 +80,16 @@ type IComponent interface {
 type IParent interface {
 	Children() []IContainer
 }
+
+type IWindow interface {
+	IComponent
+
+	GetID() string
+	RequiresFocus() bool
+
+	IsOpen() bool
+	IsSelected() bool
+
+	SetSelected(v bool)
+	setID(id string)
+}

@@ -83,6 +83,14 @@ func (b *baseComponent) IsSelected() bool {
 	return b.GetState() == StatePressed || b.GetState() == StateFocused
 }
 
+func (b *baseComponent) SetSelected(v bool) {
+	if v {
+		b.SetState(StateFocused)
+	} else {
+		b.SetState(StateNormal)
+	}
+}
+
 func (b *baseComponent) SetDraggable(val bool) {
 	b.draggable = val
 }
