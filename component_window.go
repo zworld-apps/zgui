@@ -13,7 +13,8 @@ type WindowOptions struct {
 	Content  *BoxOptions
 
 	RequiresFocus bool
-	Draggable     bool
+	// Undraggable sets window with a fixed position.
+	Undraggable bool
 }
 
 var DefaultWindowOptions = &WindowOptions{
@@ -65,7 +66,7 @@ func NewWindowComponent(options *WindowOptions) *WindowComponent {
 	})
 
 	// We will be able to drag the bar element
-	w.Bar.SetDraggable(options.Draggable)
+	w.Bar.SetDraggable(!options.Undraggable)
 	// After marking it as draggable, we have to handle
 	// the dragging event
 	w.Bar.On(events.Dragged, func() {
