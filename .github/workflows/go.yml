@@ -17,6 +17,10 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.15
+        
+    - name: Set up dependencies
+      run: sudo apt-get update -y;
+           | sudo apt-get install libxi-dev libxinerama-dev libxcursor-dev libxrandr-dev libgl1-mesa-dev -y;
 
     - name: Build
       run: go build -v ./...
