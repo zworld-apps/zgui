@@ -1,6 +1,6 @@
 # zgui
 
-[![Build Status](https://travis-ci.com/zworld-apps/zgui.svg?branch=master)](https://travis-ci.com/zworld-apps/zgui)
+[![build](https://github.com/zworld-apps/zgui/actions/workflows/go.yml/badge.svg)](https://github.com/zworld-apps/zgui/actions/workflows/go.yml)
 [![GoDoc](https://godoc.org/github.com/zworld-apps/zgui?status.svg)](https://godoc.org/github.com/zworld-apps/zgui)
 [![Go Report Card](https://goreportcard.com/badge/github.com/zworld-apps/zgui)](https://goreportcard.com/report/github.com/zworld-apps/zgui)
 
